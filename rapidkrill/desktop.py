@@ -12,7 +12,7 @@ Created on Thu Aug 15 15:34:13 2019
 import os, glob, gc, logging, logging.config
 import numpy as np 
 from datetime import datetime as dt
-from rapidkrill import read, process, report
+import read, process, report
 
 # Log events while running
 logger = logging.getLogger()

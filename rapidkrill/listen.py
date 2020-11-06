@@ -10,7 +10,7 @@ Created on Mon Aug 12 15:27:10 2019
 
 # import modules
 import re, os, time, gc, logging, logging.config, datetime
-from rapidkrill import read, process, report
+import read, process, report
 
 # log events while running
 logger = logging.getLogger()
