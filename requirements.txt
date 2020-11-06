@@ -9,6 +9,5 @@ sendgrid==5.6.0
 scikit-image>=0.15.0
 opencv-python>=3.3.0
 ipython>=6.5.
-# -e git+https://github.com/CI-CMG/pyEcholab.git/#egg=pyEcholab
--e git+https://github.com/RobBlackwell/pyEcholab/#egg=pyEcholab
+-e git+https://github.com/CI-CMG/pyEcholab.git/#egg=pyEcholab
 -e git+https://github.com/bas-acoustics/echopy.git/#egg=echopy
