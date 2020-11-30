@@ -13,7 +13,7 @@ import pandas as pd
 from geopy.distance import distance
 from scipy.interpolate import interp1d
 from scipy.signal import savgol_filter
-from echolab2.instruments import EK60
+from echolab2.instruments import EK80
 from echopy import read_calibration as readCAL
 
 # log events while running
@@ -28,20 +28,20 @@ def raw(rawfile, channel=120, transitspeed=3, calfile=None,
     
     # -------------------------------------------------------------------------
     # load rawfile    
-    ek60 = EK60.EK60()
-    ek60.read_raw(rawfile)
+    ek80 = EK80.EK80()
+    ek80.read_raw(rawfile)
     
     # -------------------------------------------------------------------------
     # read frequency channel data
     logger.info('Reading File '+rawfile.split('/')[-1]+'...')
     ch = None
-    for i in ek60.channel_id_map:
-        if str(channel)+' kHz' in ek60.channel_id_map[i]:        
+    for i in ek80.channel_id_map:
+        if str(channel)+' kHz' in ek80.channel_id_map[i]:        
             ch = i
             break
     if ch is None:
         sys.exit(str(channel) + ' kHz channel not found!')    
-    raw = ek60.get_raw_data(channel_number=ch)
+    raw = ek80.get_raw_data(channel_number=ch)
     
     # -------------------------------------------------------------------------
     # apply 38 kHz calibration parameters
@@ -95,7 +95,7 @@ def raw(rawfile, channel=120, transitspeed=3, calfile=None,
 
     # -------------------------------------------------------------------------
     # get nmea data
-    transect,Tpos,LON,LAT,lon,lat,nm,km,kph,knt = nmea(ek60, t, preraw=preraw)
+    transect,Tpos,LON,LAT,lon,lat,nm,km,kph,knt = nmea(ek80, t, preraw=preraw)
     if preraw is not None:
         if transect!=preraw['transect']:
             continuous = False
@@ -131,11 +131,11 @@ def raw(rawfile, channel=120, transitspeed=3, calfile=None,
                 km -= np.nanmin(km)
                 nm -= np.nanmin(nm)
     
-    Tmot,PITCH,ROLL,HEAVE,pitch,roll,heave,pitchmax,rollmax,heavemax =motion(ek60, t, preraw=preraw)              
+    Tmot,PITCH,ROLL,HEAVE,pitch,roll,heave,pitchmax,rollmax,heavemax =motion(ek80, t, preraw=preraw)              
     
     # -------------------------------------------------------------------------
     # delete objects to free up memory RAM 
-    del ek60, raw  
+    del ek80, raw  
     
     # -------------------------------------------------------------------------
     # return RAW data  
@@ -195,7 +195,7 @@ def nmea(ek60, t, preraw=None, maxspeed=25):
     """
     
     # get GPS datagrams
-    GPS = ek60.nmea_data.get_datagrams(['GGA', 'GLL', 'RMC'],
+    GPS = ek80.nmea_data.get_datagrams(['GGA', 'GLL', 'RMC'],
                                       return_fields=['longitude','latitude'])
     
     # find NMEA datagrams with time, longitude, and latitude
@@ -333,13 +333,13 @@ def nmea(ek60, t, preraw=None, maxspeed=25):
     return transect, T, LON, LAT, lon, lat, nm, km, kph, knt
 
 
-def motion(ek60, t, preraw=None):
+def motion(ek80, t, preraw=None):
     """
     Get motion data. Experimental. 
     """
     
     # get motion datagram
-    shr= ek60.nmea_data.get_datagrams('SHR', return_fields=['pitch','roll','heave'])
+    shr= ek80.nmea_data.get_datagrams('SHR', return_fields=['pitch','roll','heave'])
     
     # return empty if motion data not found
     if any(v is None for v in shr['SHR'].values()):        
